@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <title>Red Design - تسجيل الدخول / إنشاء حساب</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f7f7f7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .auth-box {
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      width: 320px;
+      text-align: center;
+    }
+
+    h2 {
+      color: red;
+      margin-bottom: 20px;
+    }
+
+    .logo span { font-weight: bold; }
+    .logo .d1 { color: #007bff; }
+    .logo .d2 { color: #28a745; }
+    .logo .d3 { color: #ffc107; }
+    .logo .d4 { color: #6f42c1; }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      background-color: red;
+      color: white;
+      padding: 10px;
+      width: 100%;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .toggle-link {
+      margin-top: 10px;
+      color: #007bff;
+      cursor: pointer;
+      display: block;
+    }
+
+    #message {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="auth-box">
+    <h2 class="logo">
+      RED <span class="d1">D</span><span class="d2">E</span><span class="d3">S</span><span class="d4">IGN</span>
+    </h2>
+
+    <p><em>"Innovation through technology, excellence through execution."</em></p>
+
+    <!-- نموذج تسجيل الدخول -->
+    <form id="login-form">
+      <input type="email" id="login-email" placeholder="البريد الإلكتروني" required />
+      <input type="password" id="login-password" placeholder="كلمة المرور" required />
+      <button type="submit">تسجيل الدخول</button>
+    </form>
+
+    <!-- نموذج إنشاء حساب -->
+    <form id="signup-form" style="display:none;">
+      <input type="email" id="signup-email" placeholder="البريد الإلكتروني" required />
+      <input type="password" id="signup-password" placeholder="كلمة المرور" required />
+      <button type="submit">إنشاء حساب</button>
+    </form>
+
+    <span id="toggle-to-signup" class="toggle-link">لا تملك حساباً؟ إنشاء حساب</span>
+    <span id="toggle-to-login" class="toggle-link" style="display:none;">هل لديك حساب؟ تسجيل الدخول</span>
+
+    <p id="message"></p>
+  </div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBWhIw34rJC7-xtqRt5AOPsgjBd-m_fiy0",
+      authDomain: "red-test-5f648.firebaseapp.com",
+      projectId: "red-test-5f648",
+      storageBucket: "red-test-5f648.firebasestorage.app",
+      messagingSenderId: "1088474536089",
+      appId: "1:1088474536089:web:da3aac7ec4645af3258008",
+      measurementId: "G-QHH3W1F58F"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // تسجيل الدخول
+    document.getElementById("login-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const email = document.getElementById("login-email").value;
+      const password = document.getElementById("login-password").value;
+
+      auth.signInWithEmailAndPassword(email, password)
+        .then(userCredential => {
+          document.getElementById("message").textContent = "تم تسجيل الدخول بنجاح";
+          document.getElementById("message").style.color = "green";
+        })
+        .catch(error => {
+          document.getElementById("message").textContent = error.message;
+          document.getElementById("message").style.color = "red";
+        });
+    });
+
+    // إنشاء حساب
+    document.getElementById("signup-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const email = document.getElementById("signup-email").value;
+      const password = document.getElementById("signup-password").value;
+
+      auth.createUserWithEmailAndPassword(email, password)
+        .then(userCredential => {
+          document.getElementById("message").textContent = "تم إنشاء الحساب بنجاح";
+          document.getElementById("message").style.color = "green";
+        })
+        .catch(error => {
+          document.getElementById("message").textContent = error.message;
+          document.getElementById("message").style.color = "red";
+        });
+    });
+
+    // التبديل بين النماذج
+    const loginForm = document.getElementById("login-form");
+    const signupForm = document.getElementById("signup-form");
+    const toggleToSignup = document.getElementById("toggle-to-signup");
+    const toggleToLogin = document.getElementById("toggle-to-login");
+
+    toggleToSignup.addEventListener("click", () => {
+      loginForm.style.display = "none";
+      signupForm.style.display = "block";
+      toggleToSignup.style.display = "none";
+      toggleToLogin.style.display = "block";
+      document.getElementById("message").textContent = "";
+    });
+
+    toggleToLogin.addEventListener("click", () => {
+      loginForm.style.display = "block";
+      signupForm.style.display = "none";
+      toggleToSignup.style.display = "block";
+      toggleToLogin.style.display = "none";
+      document.getElementById("message").textContent = "";
+    });
+  </script>
+</body>
+</html>
